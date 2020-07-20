@@ -40,11 +40,12 @@ def reporthook(count, block_size, total_size):
 @click.option('--disaster', default='typhoon-mangkhut', help='name of the disaster')
 @click.option('--country', default='', help='country in which the disaster happened')
 @click.option('--dest', default='output', help='destination folder')
+@click.option('--download', default=True, help='download images (yes/no)')
 @click.option('--ntl', default=False, help='filter images by night-time lights (yes/no)')
 @click.option('--bbox', default='', help='filter images by bounding box (CSV format)')
 @click.option('--maxpre', default=1000000, help='max number of pre-disaster images')
 @click.option('--maxpost', default=1000000, help='max number of post-disaster images')
-def main(disaster, country, dest, ntl, bbox, maxpre, maxpost):
+def main(disaster, country, dest, download, ntl, bbox, maxpre, maxpost):
     # initialize webdriver
     opts = Options()
     opts.headless = True
@@ -70,23 +71,24 @@ def main(disaster, country, dest, ntl, bbox, maxpre, maxpost):
     os.makedirs(dest+'/post-event', exist_ok=True)
 
     # find & download images
-    image_elements = browser.find_elements_by_css_selector('a')
-    image_urls = [el.get_attribute('text') for el in image_elements]
-    count_pre, count_post = 0, 0
-    for url in image_urls:
-        name = url.split('/')[-1]
-        if not name.endswith('.tif'):
-            continue
-        cat = url.split('/')[-2]
-        name = cat+'-'+name
-        if 'pre-event' in url and count_pre < maxpre:
-            urllib.request.urlretrieve(url, dest+'/pre-event/'+name, reporthook)
-            print(' --> image', name, 'saved')
-            count_pre += 1
-        elif 'post-event' in url and count_post < maxpost:
-            urllib.request.urlretrieve(url, dest+'/post-event/'+name, reporthook)
-            print(' --> image', name, 'saved')
-            count_post += 1
+    if download:
+        image_elements = browser.find_elements_by_css_selector('a')
+        image_urls = [el.get_attribute('text') for el in image_elements]
+        count_pre, count_post = 0, 0
+        for url in image_urls:
+            name = url.split('/')[-1]
+            if not name.endswith('.tif'):
+                continue
+            cat = url.split('/')[-2]
+            name = cat+'-'+name
+            if 'pre-event' in url and count_pre < maxpre:
+                urllib.request.urlretrieve(url, dest+'/pre-event/'+name, reporthook)
+                print(' --> image', name, 'saved')
+                count_pre += 1
+            elif 'post-event' in url and count_post < maxpost:
+                urllib.request.urlretrieve(url, dest+'/post-event/'+name, reporthook)
+                print(' --> image', name, 'saved')
+                count_post += 1
 
     # filter rasters
 
