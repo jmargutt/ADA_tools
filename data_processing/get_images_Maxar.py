@@ -167,46 +167,49 @@ def main(disaster, country, dest, download, ntl, bbox, maxpre, maxpost):
 
             print('processing', raster)
             out_name_ntl = raster.split('.')[0] + '-ntl-mask.tif'
-            with rasterio.open(raster) as src:
-                shapes_r = [x for x in shapes if not rasterio.coords.disjoint_bounds(src.bounds, rasterio.features.bounds(x))]
-                if len(shapes_r) == 0:
-                    print('no ntl present, discard')
-                    crop_next = False
-                else:
-                    print('ntl present, creating mask')
-                    out_image, out_transform = rasterio.mask.mask(src, shapes_r, crop=True)
-                    out_meta = src.meta
-
-                    out_meta.update({"driver": "GTiff",
-                                     "height": out_image.shape[1],
-                                     "width": out_image.shape[2],
-                                     "transform": out_transform})
-                    # save temporary ntl file
-                    print('saving mask', out_name_ntl)
-                    with rasterio.open(out_name_ntl, "w", **out_meta) as dst:
-                        dst.write(out_image)
-                    crop_next = True
-                raster = out_name_ntl
-            if crop_next:
+            try:
                 with rasterio.open(raster) as src:
-                    print('cropping nan on', raster)
-                    window = get_data_window(src.read(1, masked=True))
+                    shapes_r = [x for x in shapes if not rasterio.coords.disjoint_bounds(src.bounds, rasterio.features.bounds(x))]
+                    if len(shapes_r) == 0:
+                        print('no ntl present, discard')
+                        crop_next = False
+                    else:
+                        print('ntl present, creating mask')
+                        out_image, out_transform = rasterio.mask.mask(src, shapes_r, crop=True)
+                        out_meta = src.meta
 
-                    kwargs = src.meta.copy()
-                    kwargs.update({
-                        'height': window.height,
-                        'width': window.width,
-                        'transform': rasterio.windows.transform(window, src.transform)})
+                        out_meta.update({"driver": "GTiff",
+                                         "height": out_image.shape[1],
+                                         "width": out_image.shape[2],
+                                         "transform": out_transform})
+                        # save temporary ntl file
+                        print('saving mask', out_name_ntl)
+                        with rasterio.open(out_name_ntl, "w", **out_meta) as dst:
+                            dst.write(out_image)
+                        crop_next = True
+                    raster = out_name_ntl
+                if crop_next:
+                    with rasterio.open(raster) as src:
+                        print('cropping nan on', raster)
+                        window = get_data_window(src.read(1, masked=True))
 
-                    print('saving', out_name)
-                    try:
-                        with rasterio.open(out_name, 'w', **kwargs) as dst:
-                            dst.write(src.read(window=window))
-                    except:
-                        print('empty raster, discard')
+                        kwargs = src.meta.copy()
+                        kwargs.update({
+                            'height': window.height,
+                            'width': window.width,
+                            'transform': rasterio.windows.transform(window, src.transform)})
 
-                # remove temporary ntl file
-                os.remove(raster)
+                        print('saving', out_name)
+                        try:
+                            with rasterio.open(out_name, 'w', **kwargs) as dst:
+                                dst.write(src.read(window=window))
+                        except:
+                            print('empty raster, discard')
+
+                    # remove temporary ntl file
+                    os.remove(raster)
+            except:
+                print('error loading raster, skipping')
 
             # remove original raster
             # os.remove(raster_or)
