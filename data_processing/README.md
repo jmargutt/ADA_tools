@@ -7,11 +7,11 @@ Usage: python get_images_Maxar.py [OPTIONS]
 
 Options:
   --disaster TEXT    name of the disaster
-  --country TEXT     country in which the disaster happened
-  --dest TEXT        destination folder
-  --ntl TEXT         filter images by night-time lights (yes/no)
-  --bbox TEXT        filter images by bounding box (CSV format)
-  --maxpre INTEGER   max number of pre-disaster images
-  --maxpost INTEGER  max number of post-disaster images
+  --country TEXT     country in which the disaster happened [OPTIONAL]
+  --dest TEXT        destination folder [OPTIONAL]
+  --ntl TEXT         filter images by night-time lights (True/False) [DEFAULT: False]
+  --bbox TEXT        filter images by bounding box (CSV format) [OPTIONAL]
+  --maxpre INTEGER   max number of pre-disaster images [OPTIONAL]
+  --maxpost INTEGER  max number of post-disaster images [OPTIONAL]
   --help             Show this message and exit.
 ```
