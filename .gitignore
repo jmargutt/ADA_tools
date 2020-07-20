@@ -1,1 +1,3 @@
 input/*
+geckodriver.log
+data_processing/input/*

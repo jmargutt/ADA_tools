@@ -133,7 +133,7 @@ def main(disaster, country, dest, ntl, bbox, maxpre, maxpost):
     # filter by nighttime lights
 
     # load nighttime light mask
-    ntl_shapefile = '../input/ntl_mask_extended.shp'
+    ntl_shapefile = 'input/ntl_mask_extended.shp'
     if ntl:
         # filter mask by country (if provided)
         if country != '':
@@ -155,16 +155,15 @@ def main(disaster, country, dest, ntl, bbox, maxpre, maxpost):
             with fiona.open(ntl_shapefile, "r") as shapefile:
                 shapes = [feature["geometry"] for feature in shapefile]
 
-    # loop over images and filter
-    for raster in tqdm(glob.glob(dest+'/*/*'+image_label+'.tif')):
-        raster = raster.replace('\\', '/')
-        raster_or = raster
-        out_name = raster.split('.')[0] + '-ntl.tif'
-        if 'ntl' in raster:
-            continue
-        crop_next = True
+        # loop over images and filter
+        for raster in tqdm(glob.glob(dest+'/*/*'+image_label+'.tif')):
+            raster = raster.replace('\\', '/')
+            raster_or = raster
+            out_name = raster.split('.')[0] + '-ntl.tif'
+            if 'ntl' in raster:
+                continue
+            crop_next = True
 
-        if ntl:
             print('processing', raster)
             out_name_ntl = raster.split('.')[0] + '-ntl-mask.tif'
             with rasterio.open(raster) as src:
@@ -187,29 +186,29 @@ def main(disaster, country, dest, ntl, bbox, maxpre, maxpost):
                         dst.write(out_image)
                     crop_next = True
                 raster = out_name_ntl
-        if crop_next:
-            with rasterio.open(raster) as src:
-                print('cropping nan on', raster)
-                window = get_data_window(src.read(1, masked=True))
+            if crop_next:
+                with rasterio.open(raster) as src:
+                    print('cropping nan on', raster)
+                    window = get_data_window(src.read(1, masked=True))
 
-                kwargs = src.meta.copy()
-                kwargs.update({
-                    'height': window.height,
-                    'width': window.width,
-                    'transform': rasterio.windows.transform(window, src.transform)})
+                    kwargs = src.meta.copy()
+                    kwargs.update({
+                        'height': window.height,
+                        'width': window.width,
+                        'transform': rasterio.windows.transform(window, src.transform)})
 
-                print('saving', out_name)
-                try:
-                    with rasterio.open(out_name, 'w', **kwargs) as dst:
-                        dst.write(src.read(window=window))
-                except:
-                    print('empty raster, discard')
+                    print('saving', out_name)
+                    try:
+                        with rasterio.open(out_name, 'w', **kwargs) as dst:
+                            dst.write(src.read(window=window))
+                    except:
+                        print('empty raster, discard')
 
-            # remove temporary ntl file
-            os.remove(raster)
+                # remove temporary ntl file
+                os.remove(raster)
 
-        # remove original raster
-        # os.remove(raster_or)
+            # remove original raster
+            # os.remove(raster_or)
 
 
 if __name__ == "__main__":
