@@ -46,32 +46,34 @@ def reporthook(count, block_size, total_size):
 @click.option('--maxpre', default=1000000, help='max number of pre-disaster images')
 @click.option('--maxpost', default=1000000, help='max number of post-disaster images')
 def main(disaster, country, dest, download, ntl, bbox, maxpre, maxpost):
-    # initialize webdriver
-    opts = Options()
-    opts.headless = True
-    assert opts.headless  # operating in headless mode
 
-    # binary = r'C:\Program Files\Mozilla Firefox\firefox.exe'
-    options = Options()
-    options.headless = True
-    # options.binary = binary
-    cap = DesiredCapabilities().FIREFOX
-    cap["marionette"] = True  # optional
-    browser = Firefox(options=options, capabilities=cap)#, executable_path="C:\\geckodriver\\geckodriver.exe")
-    print("Headless Firefox Initialized")
-    disaster = disaster.lower().replace(' ', '-')
-    base_url = 'view-source:https://www.digitalglobe.com/ecosystem/open-data/'+disaster
-    try:
-        browser.get(base_url)
-    except:
-        print('ERROR:', base_url, 'not found')
+    print(download)
+    if download == True:
+        # initialize webdriver
+        opts = Options()
+        opts.headless = True
+        assert opts.headless  # operating in headless mode
 
-    os.makedirs(dest, exist_ok=True)
-    os.makedirs(dest+'/pre-event', exist_ok=True)
-    os.makedirs(dest+'/post-event', exist_ok=True)
+        # binary = r'C:\Program Files\Mozilla Firefox\firefox.exe'
+        options = Options()
+        options.headless = True
+        # options.binary = binary
+        cap = DesiredCapabilities().FIREFOX
+        cap["marionette"] = True  # optional
+        browser = Firefox(options=options, capabilities=cap)#, executable_path="C:\\geckodriver\\geckodriver.exe")
+        print("Headless Firefox Initialized")
+        disaster = disaster.lower().replace(' ', '-')
+        base_url = 'view-source:https://www.digitalglobe.com/ecosystem/open-data/'+disaster
+        try:
+            browser.get(base_url)
+        except:
+            print('ERROR:', base_url, 'not found')
 
-    # find & download images
-    if download:
+        os.makedirs(dest, exist_ok=True)
+        os.makedirs(dest+'/pre-event', exist_ok=True)
+        os.makedirs(dest+'/post-event', exist_ok=True)
+
+        # find & download images
         image_elements = browser.find_elements_by_css_selector('a')
         image_urls = [el.get_attribute('text') for el in image_elements]
         count_pre, count_post = 0, 0
