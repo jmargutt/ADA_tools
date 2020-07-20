@@ -1,4 +1,4 @@
-from selenium.webdriver import Firefox, Chrome
+from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import urllib.request
@@ -10,14 +10,11 @@ import glob
 import fiona
 import rasterio
 from rasterio.windows import get_data_window
-import geopandas as gpd
-from geopandas.tools import sjoin
 from tqdm import tqdm
 from shapely.geometry import box
 import geopandas as gpd
 from fiona.crs import from_epsg
 from rasterio.mask import mask
-from country_bounding_boxes import country_subunits_by_iso_code
 
 
 def getFeatures(gdf):
@@ -53,13 +50,13 @@ def main(disaster, country, dest, ntl, bbox, maxpre, maxpost):
     opts.headless = True
     assert opts.headless  # operating in headless mode
 
-    binary = r'C:\Program Files\Mozilla Firefox\firefox.exe'
+    # binary = r'C:\Program Files\Mozilla Firefox\firefox.exe'
     options = Options()
     options.headless = True
-    options.binary = binary
+    # options.binary = binary
     cap = DesiredCapabilities().FIREFOX
     cap["marionette"] = True  # optional
-    browser = Firefox(options=options, capabilities=cap, executable_path="C:\\geckodriver\\geckodriver.exe")
+    browser = Firefox(options=options, capabilities=cap)#, executable_path="C:\\geckodriver\\geckodriver.exe")
     print("Headless Firefox Initialized")
     disaster = disaster.lower().replace(' ', '-')
     base_url = 'view-source:https://www.digitalglobe.com/ecosystem/open-data/'+disaster
