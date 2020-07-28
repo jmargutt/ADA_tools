@@ -41,6 +41,8 @@ def main(mosaic, data, dest, ntl, bbox, country):
                 if same not in tuples:
                     tuples.append(same)
             for tuple in tuples:
+                if len(tuple) < 2:
+                    continue
                 out_file = tuple[0].split('.')[0] + '-merged.tif'
                 for ix, file in enumerate(tuple):
                     if ix == 0:
