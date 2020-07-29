@@ -2,7 +2,7 @@ import os
 import sys
 import argparse
 import datetime
-
+import timeit
 from shutil import move
 
 import rasterio
@@ -145,6 +145,7 @@ def get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER):
 
 def match_geometry(image_path, geo_image_file, geometry):
     try:
+        print(timeit.timeit('rasterio.mask.mask(geo_image_file, geometry, crop=True)'), number=1)
         image, transform = rasterio.mask.mask(geo_image_file, geometry, crop=True)
         out_meta = geo_image_file.meta.copy()
         good_pixel_fraction = np.count_nonzero(image) / image.size
