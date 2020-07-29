@@ -115,6 +115,7 @@ def get_image_list(root_folder):
 
 
 def save_image(image, transform, out_meta, image_path):
+    t = time.time()
     out_meta.update(
         {
             "driver": "PNG",
@@ -125,6 +126,7 @@ def save_image(image, transform, out_meta, image_path):
     )
     with rasterio.open(image_path, "w", **out_meta) as dest:
         dest.write(image)
+    print('save', time.time() - t)
     return image_path
 
 
@@ -145,6 +147,7 @@ def get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER):
 
 def match_geometry(image_path, geo_image_file, geometry):
     try:
+        t = time.time()
         image, transform = rasterio.mask.mask(geo_image_file, geometry, crop=True)
         out_meta = geo_image_file.meta.copy()
         good_pixel_fraction = np.count_nonzero(image) / image.size
@@ -154,6 +157,7 @@ def match_geometry(image_path, geo_image_file, geometry):
             and len(image.shape) > 2
             and image.shape[0] == 3
         ):
+            print('match', time.time() - t)
             return save_image(image, transform, out_meta, image_path)
     except ValueError:
         return False
@@ -175,8 +179,6 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
             with rasterio.open(geo_image_path) as geo_image_file:
                 for index, row in tqdm(df.iterrows(), total=df.shape[0]):
 
-                    damage = "unknown"
-
                     bounds = row["geometry"].bounds
                     geometry = makesquare(*bounds)
 
@@ -189,11 +191,9 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
                     image_path = get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER)
 
                     # if not os.path.exists(image_path):
-                    t = time.time()
                     save_success = match_geometry(
                         image_path, geo_image_file, geometry
                     )
-                    print('gigi', time.time() - t)
                     if save_success:
                         logger.info("Saved image at {}".format(image_path))
                         count = count + 1
