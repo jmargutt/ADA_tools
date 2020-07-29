@@ -184,7 +184,7 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
                     if "OBJECTID" in row.keys():
                         object_id = row["OBJECTID"]
                     else:
-                        object_id = row.index
+                        object_id = index
 
                     image_path = get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER)
 
