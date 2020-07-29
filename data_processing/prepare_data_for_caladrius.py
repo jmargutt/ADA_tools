@@ -190,29 +190,29 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
 
                     image_path = get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER)
 
-                    if not os.path.exists(image_path):
-                        save_success = match_geometry(
-                            image_path, geo_image_file, geometry
+                    # if not os.path.exists(image_path):
+                    save_success = match_geometry(
+                        image_path, geo_image_file, geometry
+                    )
+                    if save_success:
+                        logger.info("Saved image at {}".format(image_path))
+                        one_path = image_path
+                        other_path = image_path.split("/")
+                        other_path[-2] = (
+                            "after" if other_path[-2] == "before" else "before"
                         )
-                        if save_success:
-                            logger.info("Saved image at {}".format(image_path))
-                            one_path = image_path
-                            other_path = image_path.split("/")
-                            other_path[-2] = (
-                                "after" if other_path[-2] == "before" else "before"
-                            )
-                            other_path = "/".join(other_path)
-                            if (
-                                os.path.isfile(one_path)
-                                and os.path.isfile(other_path)
-                                and damage in DAMAGE_TYPES
-                            ):
-                                labels_file.write(
-                                    "{0}.png {1:.4f}\n".format(
-                                        object_id, damage_quantifier(damage)
-                                    )
+                        other_path = "/".join(other_path)
+                        if (
+                            os.path.isfile(one_path)
+                            and os.path.isfile(other_path)
+                            and damage in DAMAGE_TYPES
+                        ):
+                            labels_file.write(
+                                "{0}.png {1:.4f}\n".format(
+                                    object_id, damage_quantifier(damage)
                                 )
-                                count = count + 1
+                            )
+                            count = count + 1
 
     delta = datetime.datetime.now() - start_time
 
