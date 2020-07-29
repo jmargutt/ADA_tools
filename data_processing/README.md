@@ -1,5 +1,5 @@
 # data_processing
-scripts to download/transform/upload pre- and post-disaster images
+scripts to download/transform pre- and post-disaster images
 
 1. get images from Maxar
 ```
