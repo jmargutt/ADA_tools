@@ -123,16 +123,10 @@ def save_image(image, transform, out_meta, image_path):
             "transform": transform,
         }
     )
+    t = time.time()
     with rasterio.open(image_path, "w", **out_meta) as dest:
-        t = time.time()
         dest.write(image)
-        print('save rasterio', time.time() - t)
-        t = time.time()
-        array = dest.read()
-        im = Image.fromarray(array)
-        im.save(image_path)
-        print('save PIL', time.time() - t)
-
+    print('save rasterio', time.time() - t)
     return image_path
 
 
@@ -162,6 +156,11 @@ def match_geometry(image_path, geo_image_file, geometry):
             and len(image.shape) > 2
             and image.shape[0] == 3
         ):
+            t = time.time()
+            array = image.read()
+            im = Image.fromarray(array)
+            im.save(image_path)
+            print('save PIL', time.time() - t)
             return save_image(image, transform, out_meta, image_path)
     except ValueError:
         return False
