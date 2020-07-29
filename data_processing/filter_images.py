@@ -9,6 +9,7 @@ from shapely.geometry import box
 import geopandas as gpd
 from fiona.crs import from_epsg
 from rasterio.mask import mask
+from shutil import copyfile
 
 
 def getFeatures(gdf):
@@ -37,12 +38,10 @@ def main(mosaic, data, dest, ntl, bbox, country):
             tuples = []
             for filename in filenames:
                 name = filename.split('-')[1]
-                same = [x for x in filenames if x.split('-')[1] == name]
-                if same not in tuples:
+                same = sorted([x for x in filenames if x.split('-')[1] == name])
+                if same not in tuples and len(same)>1:
                     tuples.append(same)
             for tuple in tuples:
-                if len(tuple) < 2:
-                    continue
                 out_file = tuple[0].split('.')[0] + '-merged.tif'
                 for ix, file in enumerate(tuple):
                     if ix == 0:
@@ -55,13 +54,13 @@ def main(mosaic, data, dest, ntl, bbox, country):
                         os.system('gdalwarp -r average {} {} {}'.format(os.path.join(data, prepost + '-event', file),
                                                                         os.path.join(dest, prepost + '-event', out_file),
                                                                         os.path.join(dest, prepost + '-event', out_file)))
-                for file in tuple:
-                    os.remove(os.path.join(dest, prepost+'-event', file))
+            # copy all the other rasters to dest
+            for file in [x for x in filenames if x not in [item for tuple in tuples for item in tuple]]:
+                copyfile(os.path.join(data, prepost + '-event', file), os.path.join(dest, prepost + '-event', file))
 
     # filter pre-event rasters
 
     print('filtering pre-event rasters')
-    image_label = ''
 
     # filter by bounding box (if provided)
     if bbox != '':
@@ -71,13 +70,12 @@ def main(mosaic, data, dest, ntl, bbox, country):
         coords = getFeatures(geo)
         print('filtering on bbox:')
         print(coords)
-        image_label = '-bbox'
 
         # loop over images and filter
         for raster in tqdm(glob.glob(dest + '/pre-event/*.tif')):
             raster = raster.replace('\\', '/')
             raster_or = raster
-            out_name = raster.split('.')[0] + image_label +'.tif'
+            out_name = raster.split('.')[0] +'-bbox.tif'
             with rasterio.open(raster) as src:
                 print('cropping on bbox')
 
@@ -130,7 +128,7 @@ def main(mosaic, data, dest, ntl, bbox, country):
                 shapes = [feature["geometry"] for feature in shapefile]
 
         # loop over images and filter
-        for raster in tqdm(glob.glob(dest+'/pre-event/*'+image_label+'.tif')):
+        for raster in tqdm(glob.glob(dest+'/pre-event/*.tif')):
             raster = raster.replace('\\', '/')
             raster_or = raster
             out_name = raster.split('.')[0] + '-ntl.tif'
@@ -181,6 +179,8 @@ def main(mosaic, data, dest, ntl, bbox, country):
 
                     # remove temporary ntl file
                     os.remove(raster)
+                    # remove original raster
+                    os.remove(raster_or)
             except:
                 print('error loading raster, skipping')
 
