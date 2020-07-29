@@ -194,13 +194,13 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
 
                     image_path = get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER)
 
-                    # if not os.path.exists(image_path):
-                    save_success = match_geometry(
-                        image_path, geo_image_file, geometry
-                    )
-                    if save_success:
-                        logger.info("Saved image at {}".format(image_path))
-                        count = count + 1
+                    if not os.path.exists(image_path):
+                        save_success = match_geometry(
+                            image_path, geo_image_file, geometry
+                        )
+                        if save_success:
+                            logger.info("Saved image at {}".format(image_path))
+                            count = count + 1
 
     delta = datetime.datetime.now() - start_time
 
