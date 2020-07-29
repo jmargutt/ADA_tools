@@ -124,6 +124,8 @@ def save_image(image, transform, out_meta, image_path):
             "transform": transform,
         }
     )
+    print('update', time.time() - t)
+    t = time.time()
     with rasterio.open(image_path, "w", **out_meta) as dest:
         dest.write(image)
     print('save', time.time() - t)
@@ -147,7 +149,6 @@ def get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER):
 
 def match_geometry(image_path, geo_image_file, geometry):
     try:
-        t = time.time()
         image, transform = rasterio.mask.mask(geo_image_file, geometry, crop=True)
         out_meta = geo_image_file.meta.copy()
         good_pixel_fraction = np.count_nonzero(image) / image.size
@@ -157,7 +158,6 @@ def match_geometry(image_path, geo_image_file, geometry):
             and len(image.shape) > 2
             and image.shape[0] == 3
         ):
-            print('match', time.time() - t)
             return save_image(image, transform, out_meta, image_path)
     except ValueError:
         return False
