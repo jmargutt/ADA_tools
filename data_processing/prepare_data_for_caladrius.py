@@ -4,7 +4,7 @@ import argparse
 import datetime
 import time
 from shutil import move
-
+from PIL import Image
 import rasterio
 import pandas as pd
 import geopandas
@@ -115,7 +115,6 @@ def get_image_list(root_folder):
 
 
 def save_image(image, transform, out_meta, image_path):
-    t = time.time()
     out_meta.update(
         {
             "driver": "PNG",
@@ -124,11 +123,16 @@ def save_image(image, transform, out_meta, image_path):
             "transform": transform,
         }
     )
-    print('update', time.time() - t)
-    t = time.time()
     with rasterio.open(image_path, "w", **out_meta) as dest:
+        t = time.time()
         dest.write(image)
-    print('save', time.time() - t)
+        print('save rasterio', time.time() - t)
+        t = time.time()
+        array = dest.read()
+        im = Image.fromarray(array)
+        im.save(image_path)
+        print('save PIL', time.time() - t)
+
     return image_path
 
 
