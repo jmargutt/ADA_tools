@@ -157,8 +157,11 @@ def match_geometry(image_path, geo_image_file, geometry):
             and image.shape[0] == 3
         ):
             t = time.time()
-            array = image.read()
-            im = Image.fromarray(array)
+            print(image.shape)
+            image = np.swapaxes(image, 0, 2)
+            image = np.swapaxes(image, 0, 1)
+            print(image.shape)
+            im = Image.fromarray(image)
             im.save(image_path)
             print('save PIL', time.time() - t)
             return save_image(image, transform, out_meta, image_path)
