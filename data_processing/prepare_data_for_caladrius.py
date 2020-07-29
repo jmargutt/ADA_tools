@@ -115,26 +115,24 @@ def get_image_list(root_folder):
 
 
 def save_image(image, transform, out_meta, image_path):
-    t = time.time()
-    out_meta.update(
-        {
-            "driver": "PNG",
-            "height": image.shape[1],
-            "width": image.shape[2],
-            "transform": transform,
-        }
-    )
-    with rasterio.open(image_path, "w", **out_meta) as dest:
-        dest.write(image)
-    print('save rasterio', time.time() - t)
-    t = time.time()
-    print(image.shape)
+    # t = time.time()
+    # out_meta.update(
+    #     {
+    #         "driver": "PNG",
+    #         "height": image.shape[1],
+    #         "width": image.shape[2],
+    #         "transform": transform,
+    #     }
+    # )
+    # with rasterio.open(image_path, "w", **out_meta) as dest:
+    #     dest.write(image)
+    # print('save rasterio', time.time() - t)
+    # t = time.time()
     image = np.swapaxes(image, 0, 2)
     image = np.swapaxes(image, 0, 1)
-    print(image.shape)
     im = Image.fromarray(image)
     im.save(image_path)
-    print('save PIL', time.time() - t)
+    # print('save PIL', time.time() - t)
     return image_path
 
 
