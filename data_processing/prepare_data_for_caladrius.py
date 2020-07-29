@@ -115,6 +115,7 @@ def get_image_list(root_folder):
 
 
 def save_image(image, transform, out_meta, image_path):
+    t = time.time()
     out_meta.update(
         {
             "driver": "PNG",
@@ -123,7 +124,6 @@ def save_image(image, transform, out_meta, image_path):
             "transform": transform,
         }
     )
-    t = time.time()
     with rasterio.open(image_path, "w", **out_meta) as dest:
         dest.write(image)
     print('save rasterio', time.time() - t)
@@ -156,14 +156,14 @@ def match_geometry(image_path, geo_image_file, geometry):
             and len(image.shape) > 2
             and image.shape[0] == 3
         ):
-            t = time.time()
-            print(image.shape)
-            image = np.swapaxes(image, 0, 2)
-            image = np.swapaxes(image, 0, 1)
-            print(image.shape)
-            im = Image.fromarray(image)
-            im.save(image_path)
-            print('save PIL', time.time() - t)
+            # t = time.time()
+            # print(image.shape)
+            # image = np.swapaxes(image, 0, 2)
+            # image = np.swapaxes(image, 0, 1)
+            # print(image.shape)
+            # im = Image.fromarray(image)
+            # im.save(image_path)
+            # print('save PIL', time.time() - t)
             return save_image(image, transform, out_meta, image_path)
     except ValueError:
         return False
