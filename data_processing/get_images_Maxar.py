@@ -70,6 +70,8 @@ def main(disaster, dest, maxpre, maxpost):
     print('selecting intersection of pre- and post-disaster sets (images that are in both)')
     images_pre_selected = [x for x in images_pre if x.split('/')[-1] in [x.split('/')[-1] for x in images_post]]
     images_post_selected = [x for x in images_post if x.split('/')[-1] in [x.split('/')[-1] for x in images_pre]]
+    images_pre_selected = sorted(images_pre_selected, key=lambda x: x.split('/')[-1])
+    images_post_selected = sorted(images_post_selected, key=lambda x: x.split('/')[-1])
     print('selected pre-disaster images:', len(images_pre_selected))
     print('selected post-disaster images:', len(images_post_selected))
     print('downloading pre-disaster images')
