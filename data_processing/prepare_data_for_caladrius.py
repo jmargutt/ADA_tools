@@ -148,19 +148,19 @@ def get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER):
 
 
 def match_geometry(image_path, geo_image_file, geometry):
-    try:
-        image, transform = rasterio.mask.mask(geo_image_file, geometry, crop=True)
-        out_meta = geo_image_file.meta.copy()
-        good_pixel_fraction = np.count_nonzero(image) / image.size
-        if (
-            np.sum(image) > 0
-            and good_pixel_fraction > NONZERO_PIXEL_THRESHOLD
-            and len(image.shape) > 2
-            and image.shape[0] == 3
-        ):
-            return save_image(image, transform, out_meta, image_path)
-    except ValueError:
-        return False
+    # try:
+    image, transform = rasterio.mask.mask(geo_image_file, geometry, crop=True)
+    out_meta = geo_image_file.meta.copy()
+    good_pixel_fraction = np.count_nonzero(image) / image.size
+    if (
+        np.sum(image) > 0
+        and good_pixel_fraction > NONZERO_PIXEL_THRESHOLD
+        and len(image.shape) > 2
+        and image.shape[0] == 3
+    ):
+        return save_image(image, transform, out_meta, image_path)
+    # except ValueError:
+    #     return False
 
 
 def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
@@ -189,7 +189,7 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
                         object_id = index
 
                     image_path = get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER)
-                    print(image_path, geometry, geo_image_file)
+                    # print(image_path, geometry, geo_image_file)
 
                     if not os.path.exists(image_path):
                         save_success = match_geometry(
