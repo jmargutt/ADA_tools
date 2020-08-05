@@ -109,7 +109,7 @@ def get_image_list(root_folder):
     image_list = []
     for path, subdirs, files in os.walk(root_folder):
         for name in files:
-            if name.endswith(".tif"):
+            if name.lower().endswith(".tif"):
                 image_list.append(os.path.join(path, name).replace("\\","/"))
     print(image_list)
     return image_list
