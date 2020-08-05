@@ -111,7 +111,6 @@ def get_image_list(root_folder):
         for name in files:
             if name.lower().endswith(".tif"):
                 image_list.append(os.path.join(path, name).replace("\\","/"))
-    print(image_list)
     return image_list
 
 
@@ -190,6 +189,7 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
                         object_id = index
 
                     image_path = get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER)
+                    print(image_path, geometry, geo_image_file)
 
                     if not os.path.exists(image_path):
                         save_success = match_geometry(
