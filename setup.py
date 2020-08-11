@@ -23,7 +23,6 @@ setuptools.setup(
         'rasterio',
         'shapely',
         'geopandas',
-        'shutil',
         'neat-EO'
     ],
     extras_require={
