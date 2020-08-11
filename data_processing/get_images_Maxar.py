@@ -1,7 +1,5 @@
-from selenium.webdriver import Firefox
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import urllib.request
+from bs4 import BeautifulSoup
 import sys
 import time
 import click
@@ -28,41 +26,29 @@ def reporthook(count, block_size, total_size):
                     (percent, progress_size / (1024 * 1024), speed, duration))
     sys.stdout.flush()
 
+
+def get_maxar_image_urls(base_url):
+    response = urllib.request.urlopen(base_url)
+    html = response.read()
+    html_soup = BeautifulSoup(html, 'html.parser')
+    return [el['href'] for el in html_soup.find_all('a') if el['href'].endswith('.tif')]
+
+
 @click.command()
 @click.option('--disaster', default='typhoon-mangkhut', help='name of the disaster')
 @click.option('--dest', default='output', help='destination folder')
 @click.option('--maxpre', default=1000000, help='max number of pre-disaster images')
 @click.option('--maxpost', default=1000000, help='max number of post-disaster images')
 def main(disaster, dest, maxpre, maxpost):
-
-    # initialize webdriver
-    opts = Options()
-    opts.headless = True
-    assert opts.headless  # operating in headless mode
-
-    # binary = r'C:\Program Files\Mozilla Firefox\firefox.exe'
-    options = Options()
-    options.headless = True
-    # options.binary = binary
-    cap = DesiredCapabilities().FIREFOX
-    cap["marionette"] = True  # optional
-    browser = Firefox(options=options, capabilities=cap)#, executable_path="C:\\geckodriver\\geckodriver.exe")
-    print("Headless Firefox Initialized")
-    disaster = disaster.lower().replace(' ', '-')
-    base_url = 'view-source:https://www.digitalglobe.com/ecosystem/open-data/'+disaster
-    try:
-        browser.get(base_url)
-    except:
-        print('ERROR:', base_url, 'not found')
-
     os.makedirs(dest, exist_ok=True)
     os.makedirs(dest+'/pre-event', exist_ok=True)
     os.makedirs(dest+'/post-event', exist_ok=True)
 
-    # find & download images
-    image_elements = browser.find_elements_by_css_selector('a')
-    urls = [el.get_attribute('text') for el in image_elements]
-    images = [x for x in urls if x.split('/')[-1].endswith('.tif')]
+    # scrape maxar webpage for image urls
+    base_url = 'https://www.digitalglobe.com/ecosystem/open-data/' + disaster
+    images = get_maxar_image_urls(base_url)
+
+    # download images
     images_pre = [x for x in images if 'pre-' in x.split('/')[-4]]
     images_post = [x for x in images if 'post-' in x.split('/')[-4]]
     print('total pre-disaster images:', len(images_pre))
