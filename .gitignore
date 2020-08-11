@@ -1,4 +1,4 @@
-data_processing/data/*
+src/ada_tools/data_processing/data/*
 **/geckodriver.log
 **/run.log
 

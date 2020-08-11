@@ -310,7 +310,7 @@ def create_version_file(version_number, TARGET_DATA_FOLDER, VERSION_FILE_NAME):
 def main():
     logging.basicConfig(
         handlers=[
-            logging.FileHandler(os.path.join(".", "run.log").replace("\\","/")),
+            logging.FileHandler(os.path.join("", "run.log").replace("\\", "/")),
             logging.StreamHandler(sys.stdout),
         ],
         level=logging.DEBUG,
