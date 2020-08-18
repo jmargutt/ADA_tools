@@ -36,7 +36,7 @@ def get_maxar_image_urls(base_url):
 
 @click.command()
 @click.option('--disaster', default='typhoon-mangkhut', help='name of the disaster')
-@click.option('--dest', default='output', help='destination folder')
+@click.option('--dest', default='input', help='destination folder')
 @click.option('--maxpre', default=1000000, help='max number of pre-disaster images')
 @click.option('--maxpost', default=1000000, help='max number of post-disaster images')
 def main(disaster, dest, maxpre, maxpost):

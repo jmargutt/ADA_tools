@@ -2,6 +2,10 @@ src/ada_tools/data_processing/data/*
 **/geckodriver.log
 **/run.log
 
+# ADA data
+input/
+output/
+
 # ds dev stuff
 data/
 notebooks_dev/

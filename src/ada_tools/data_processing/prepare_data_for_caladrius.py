@@ -339,7 +339,7 @@ def main():
         "--dest",
         type=str,
         required=True,
-        help="output data path",
+        help="input data path",
     )
     parser.add_argument(
         "--create-image-stamps",
@@ -359,7 +359,7 @@ def main():
 
     GEOJSON_FILE = os.path.join(ROOT_DIRECTORY, "buildings.geojson").replace("\\", "/")
 
-    # output
+    # input
     VERSION_FILE_NAME = "VERSION"
 
     TARGET_DATA_FOLDER = os.path.join(args.dest).replace("\\", "/")

@@ -6,30 +6,28 @@ For development:        "pip install -e .[dev]"
 
 import setuptools
 
-# with open("requirements.txt") as f:
-#     install_requires = f.read().splitlines()
+with open("requirements.txt") as f:
+    install_requires = f.read().splitlines()
+
+project_name = "ada_tools"
 
 setuptools.setup(
-    name="ada_tools",
+    name=project_name,
     version="0.1",
     description="Satelite image preprocessing utilities",
     packages=setuptools.find_packages(where="src"),
     package_dir={"": "src"},
-    install_requires=[
-        'tqdm',
-        'click',
-        'bs4',
-        'fiona',
-        'rasterio',
-        'shapely',
-        'geopandas',
-        'neat-EO'
-    ],
+    install_requires=install_requires,
     extras_require={
-        'dev': [  # Place NON-production dependencies in this list - so for DEVELOPMENT ONLY!
-            "jupyterlab",
+        "dev": [  # Place NON-production dependencies in this list - so for DEVELOPMENT ONLY!
             "black",
-            "flake8",
+            "flake8"
         ],
     },
+    entry_points={
+        'console_scripts': [
+            f"load_images = {project_name}.data_processing.get_images_Maxar:main",
+            f"filter_images = {project_name}.data_processing.filter_images:main"
+        ]
+    }
 )
