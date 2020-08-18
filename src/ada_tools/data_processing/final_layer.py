@@ -7,7 +7,7 @@ import numpy as np
 @click.command()
 @click.option('--builds', help='input (buildings)')
 @click.option('--damage', help='input (damage classes)')
-@click.option('--out', default='buildings_predictions.geojson', help='output')
+@click.option('--out', default='buildings_predictions.geojson', help='input')
 def final_layer(builds, damage, out):
     df = gpd.read_file(builds).to_crs(epsg="4326")
     df = df.loc[~df["geometry"].is_empty]

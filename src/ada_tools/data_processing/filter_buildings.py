@@ -3,7 +3,7 @@ import click
 
 @click.command()
 @click.option('--data', default='buildings.geojson', help='input')
-@click.option('--dest', default='buildings-filtered.geojson', help='output')
+@click.option('--dest', default='buildings-filtered.geojson', help='input')
 @click.option('--area', default=5, help='minimum building area, in m2 [DEFAULT: 5]')
 def main(data, dest, area):
 

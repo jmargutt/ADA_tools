@@ -310,7 +310,7 @@ def create_version_file(version_number, TARGET_DATA_FOLDER, VERSION_FILE_NAME):
 def main():
     logging.basicConfig(
         handlers=[
-            logging.FileHandler(os.path.join(".", "run.log").replace("\\","/")),
+            logging.FileHandler(os.path.join("", "run.log").replace("\\", "/")),
             logging.StreamHandler(sys.stdout),
         ],
         level=logging.DEBUG,
@@ -339,7 +339,7 @@ def main():
         "--dest",
         type=str,
         required=True,
-        help="output data path",
+        help="input data path",
     )
     parser.add_argument(
         "--create-image-stamps",
@@ -359,7 +359,7 @@ def main():
 
     GEOJSON_FILE = os.path.join(ROOT_DIRECTORY, "buildings.geojson").replace("\\", "/")
 
-    # output
+    # input
     VERSION_FILE_NAME = "VERSION"
 
     TARGET_DATA_FOLDER = os.path.join(args.dest).replace("\\", "/")

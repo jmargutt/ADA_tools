@@ -35,7 +35,7 @@ bbox_query = "s=\""+str(bbounds[1])+"\" w=\""+str(bbounds[0])+"\" n=\""+str(bbou
 # call API
 print('call API:')
 r = api.query("""
-<osm-script output="json">
+<osm-script input="json">
     <query type="way">
       <has-kv k="building"/>
       <bbox-query """+bbox_query+"""/>
