@@ -158,7 +158,14 @@ def match_geometry(image_path, geo_image_file, geometry):
             and len(image.shape) > 2
             and image.shape[0] == 3
         ):
+            print('image looks good')
             return save_image(image, transform, out_meta, image_path)
+        else:
+            print('BAD image')
+            print(np.sum(image))
+            print(good_pixel_fraction, NONZERO_PIXEL_THRESHOLD)
+            print(len(image.shape))
+            print(image.shape[0])
     except ValueError:
         return False
 
@@ -183,8 +190,6 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
     for geo_image_path in tqdm(image_list):
         with rasterio.open(geo_image_path) as geo_image_file:
             df = df.to_crs(geo_image_file.crs)
-            print('dataframe: ', df.crs)
-            print('raster: ', geo_image_file.crs)
             for index, row in tqdm(df.iterrows(), total=df.shape[0]):
 
                 bounds = row["geometry"].bounds
