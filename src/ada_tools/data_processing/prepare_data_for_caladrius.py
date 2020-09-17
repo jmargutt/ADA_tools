@@ -172,7 +172,7 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
 
     image_list = get_image_list(ROOT_DIRECTORY)
 
-    image_list = [image_list[0], image_list[-1]]
+    image_list = [x for x in image_list if '10200100620FDC00-2112212-merged-bbox' in x]
 
     for geo_image_path in image_list:
         image_path = get_image_path(geo_image_path, 1, TEMP_DATA_FOLDER)
