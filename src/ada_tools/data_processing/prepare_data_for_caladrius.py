@@ -172,6 +172,8 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
 
     image_list = get_image_list(ROOT_DIRECTORY)
 
+    image_list = [image_list[0], image_list[-1]]
+
     for geo_image_path in image_list:
         image_path = get_image_path(geo_image_path, 1, TEMP_DATA_FOLDER)
         print(geo_image_path, '-->', image_path)
