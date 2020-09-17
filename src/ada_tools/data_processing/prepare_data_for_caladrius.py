@@ -158,14 +158,7 @@ def match_geometry(image_path, geo_image_file, geometry):
             and len(image.shape) > 2
             and image.shape[0] == 3
         ):
-            print('image looks good')
             return save_image(image, transform, out_meta, image_path)
-        else:
-            print('BAD image')
-            print(np.sum(image))
-            print(good_pixel_fraction, NONZERO_PIXEL_THRESHOLD)
-            print(len(image.shape))
-            print(image.shape[0])
     except ValueError:
         return False
 
@@ -178,12 +171,6 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
     count = 0
 
     image_list = get_image_list(ROOT_DIRECTORY)
-
-    image_list = [x for x in image_list if '10200100620FDC00-2112212-merged-bbox' in x]
-
-    for geo_image_path in image_list:
-        image_path = get_image_path(geo_image_path, 1, TEMP_DATA_FOLDER)
-        print(geo_image_path, '-->', image_path)
 
     # logger.info(len(image_list)) # 319
 

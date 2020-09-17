@@ -54,14 +54,22 @@ def main(disaster, dest, maxpre, maxpost):
     print('total pre-disaster images:', len(images_pre))
     print('total post-disaster images:', len(images_post))
     print('selecting intersection of pre- and post-disaster sets (images that are in both)')
-    # images_pre_selected = [x for x in images_pre if x.split('/')[-1] in [x.split('/')[-1] for x in images_post]]
-    # images_post_selected = [x for x in images_post if x.split('/')[-1] in [x.split('/')[-1] for x in images_pre]]
-    # images_pre_selected = sorted(images_pre_selected, key=lambda x: x.split('/')[-1])
-    # images_post_selected = sorted(images_post_selected, key=lambda x: x.split('/')[-1])
-    # print('selected pre-disaster images:', len(images_pre_selected))
-    # print('selected post-disaster images:', len(images_post_selected))
-    images_pre_selected = images_pre
-    images_post_selected = images_post
+
+    # post = ["10200100620FDC00", "102001006814C300", "102001006886C000", "1030010070D20000", "1030010071391E00", "10300100721C9600", "103001007291A200",
+    # "1040010031199800", "1040010032697D00", "1040010032ACA100", "105001000BCBA800"]
+    post = ["105001000BCBA800"]
+    pre = ["103001005B6AEB00", "103001006B055400", "103001003DD5FC00", "1050410010375B00"]
+    images_pre_selected = [x for x in images_pre if any([k in x for k in pre])]
+    images_post_selected = [x for x in images_post if any([k in x for k in post])]
+
+    images_pre_selected = [x for x in images_pre_selected if x.split('/')[-1] in [x.split('/')[-1] for x in images_post_selected]]
+    images_post_selected = [x for x in images_post_selected if x.split('/')[-1] in [x.split('/')[-1] for x in images_pre_selected]]
+    images_pre_selected = sorted(images_pre_selected, key=lambda x: x.split('/')[-1])
+    images_post_selected = sorted(images_post_selected, key=lambda x: x.split('/')[-1])
+    print('selected pre-disaster images:', len(images_pre_selected))
+    print('selected post-disaster images:', len(images_post_selected))
+    # images_pre_selected = images_pre
+    # images_post_selected = images_post
     print('downloading pre-disaster images')
     for url in tqdm(images_pre_selected[:min(len(images_pre_selected), maxpre)]):
         name = url.split('/')[-1]
