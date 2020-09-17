@@ -183,6 +183,8 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
     for geo_image_path in tqdm(image_list):
         with rasterio.open(geo_image_path) as geo_image_file:
             df = df.to_crs(geo_image_file.crs)
+            print('dataframe: ', df.crs)
+            print('raster: ', geo_image_file.crs)
             for index, row in tqdm(df.iterrows(), total=df.shape[0]):
 
                 bounds = row["geometry"].bounds
