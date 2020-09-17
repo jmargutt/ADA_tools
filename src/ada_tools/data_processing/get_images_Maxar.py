@@ -75,13 +75,25 @@ def main(disaster, dest, maxpre, maxpost):
         name = url.split('/')[-1]
         cat = url.split('/')[-2]
         name = cat+'-'+name
-        urllib.request.urlretrieve(url, dest+'/pre-event/'+name, reporthook)
+        try:
+            urllib.request.urlretrieve(url, dest+'/pre-event/'+name, reporthook)
+        except:
+            'error, sleeping 1 min then retrying'
+            print(dest+'/pre-event/'+name)
+            time.sleep(60)
+            urllib.request.urlretrieve(url, dest + '/pre-event/' + name, reporthook)
     print('downloading post-disaster images')
     for url in tqdm(images_post_selected[:min(len(images_post_selected), maxpost)]):
         name = url.split('/')[-1]
         cat = url.split('/')[-2]
         name = cat + '-' + name
-        urllib.request.urlretrieve(url, dest + '/post-event/' + name, reporthook)
+        try:
+            urllib.request.urlretrieve(url, dest + '/post-event/' + name, reporthook)
+        except:
+            'error, sleeping 1 min then retrying'
+            print(dest+'/post-event/'+name)
+            time.sleep(60)
+            urllib.request.urlretrieve(url, dest + '/post-event/' + name, reporthook)
 
 
 if __name__ == "__main__":
