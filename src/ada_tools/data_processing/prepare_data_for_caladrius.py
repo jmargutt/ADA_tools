@@ -178,31 +178,30 @@ def create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER):
 
     # logger.info(len(image_list)) # 319
 
-    with open(LABELS_FILE, "w+") as labels_file:
-        for geo_image_path in tqdm(image_list):
-            with rasterio.open(geo_image_path) as geo_image_file:
-                df = df.to_crs(geo_image_file.crs)
-                for index, row in tqdm(df.iterrows(), total=df.shape[0]):
+    for geo_image_path in tqdm(image_list):
+        with rasterio.open(geo_image_path) as geo_image_file:
+            df = df.to_crs(geo_image_file.crs)
+            for index, row in tqdm(df.iterrows(), total=df.shape[0]):
 
-                    bounds = row["geometry"].bounds
-                    geometry = makesquare(*bounds)
+                bounds = row["geometry"].bounds
+                geometry = makesquare(*bounds)
 
-                    # identify data point
-                    if "OBJECTID" in row.keys():
-                        object_id = row["OBJECTID"]
-                    else:
-                        object_id = index
+                # identify data point
+                if "OBJECTID" in row.keys():
+                    object_id = row["OBJECTID"]
+                else:
+                    object_id = index
 
-                    image_path = get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER)
-                    # print(image_path, geometry, geo_image_file)
+                image_path = get_image_path(geo_image_path, object_id, TEMP_DATA_FOLDER)
+                # print(image_path, geometry, geo_image_file)
 
-                    if not os.path.exists(image_path):
-                        save_success = match_geometry(
-                            image_path, geo_image_file, geometry
-                        )
-                        if save_success:
-                            logger.info("Saved image at {}".format(image_path))
-                            count = count + 1
+                if not os.path.exists(image_path):
+                    save_success = match_geometry(
+                        image_path, geo_image_file, geometry
+                    )
+                    if save_success:
+                        logger.info("Saved image at {}".format(image_path))
+                        count = count + 1
 
     delta = datetime.datetime.now() - start_time
 
@@ -397,7 +396,7 @@ def main():
     if args.create_image_stamps:
         logger.info("Creating training dataset.")
         create_datapoints(df, ROOT_DIRECTORY, LABELS_FILE, TEMP_DATA_FOLDER)
-        split_datapoints(LABELS_FILE, TARGET_DATA_FOLDER, TEMP_DATA_FOLDER)
+        # split_datapoints(LABELS_FILE, TARGET_DATA_FOLDER, TEMP_DATA_FOLDER)
         create_inference_dataset(TEMP_DATA_FOLDER, TARGET_DATA_FOLDER)
     else:
         logger.info("Skipping creation of training dataset.")
