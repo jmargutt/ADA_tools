@@ -36,10 +36,20 @@ def get_maxar_image_urls(base_url):
 
 @click.command()
 @click.option('--disaster', default='typhoon-mangkhut', help='name of the disaster')
-@click.option('--dest', default='input', help='destination folder')
+@click.option('--dest', default='input', help='destination directory')
 @click.option('--maxpre', default=1000000, help='max number of pre-disaster images')
 @click.option('--maxpost', default=1000000, help='max number of post-disaster images')
 def main(disaster, dest, maxpre, maxpost):
+    """Download images from Maxar Open Data Program
+
+        Keyword arguments:
+        disaster -- name of the disaster
+        dest -- destination directory (where to save the images)
+        maxpre -- max number of pre-disaster images
+        maxpost -- max number of post-disaster images
+    """
+
+    # create desrinaton directory, if it doesn't exist
     os.makedirs(dest, exist_ok=True)
     os.makedirs(dest+'/pre-event', exist_ok=True)
     os.makedirs(dest+'/post-event', exist_ok=True)
@@ -55,21 +65,22 @@ def main(disaster, dest, maxpre, maxpost):
     print('total post-disaster images:', len(images_post))
     print('selecting intersection of pre- and post-disaster sets (images that are in both)')
 
-    # post = ["10200100620FDC00", "102001006814C300", "102001006886C000", "1030010070D20000", "1030010071391E00", "10300100721C9600", "103001007291A200",
-    # "1040010031199800", "1040010032697D00", "1040010032ACA100", "105001000BCBA800"]
-    post = ["105001000BCBA800"]
-    pre = ["103001005B6AEB00", "103001006B055400", "103001003DD5FC00", "1050410010375B00"]
-    images_pre_selected = [x for x in images_pre if any([k in x for k in pre])]
-    images_post_selected = [x for x in images_post if any([k in x for k in post])]
+    # # post = ["10200100620FDC00", "102001006814C300", "102001006886C000", "1030010070D20000", "1030010071391E00", "10300100721C9600", "103001007291A200",
+    # # "1040010031199800", "1040010032697D00", "1040010032ACA100", "105001000BCBA800"]
+    # # post = ["105001000BCBA800"]
+    # # pre = ["103001005B6AEB00", "103001006B055400", "103001003DD5FC00", "1050410010375B00"]
+    # images_pre_selected = [x for x in images_pre if any([k in x for k in pre])]
+    # images_post_selected = [x for x in images_post if any([k in x for k in post])]
 
-    images_pre_selected = [x for x in images_pre_selected if x.split('/')[-1] in [x.split('/')[-1] for x in images_post_selected]]
-    images_post_selected = [x for x in images_post_selected if x.split('/')[-1] in [x.split('/')[-1] for x in images_pre_selected]]
+    images_pre_selected = [x for x in images_pre if x.split('/')[-1] in [x.split('/')[-1] for x in images_post]]
+    images_post_selected = [x for x in images_post if x.split('/')[-1] in [x.split('/')[-1] for x in images_pre]]
     images_pre_selected = sorted(images_pre_selected, key=lambda x: x.split('/')[-1])
     images_post_selected = sorted(images_post_selected, key=lambda x: x.split('/')[-1])
     print('selected pre-disaster images:', len(images_pre_selected))
     print('selected post-disaster images:', len(images_post_selected))
-    # images_pre_selected = images_pre
-    # images_post_selected = images_post
+
+    images_pre_selected = images_pre
+    images_post_selected = images_post
     print('downloading pre-disaster images')
     for url in tqdm(images_pre_selected[:min(len(images_pre_selected), maxpre)]):
         name = url.split('/')[-1]
