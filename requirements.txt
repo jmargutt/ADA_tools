@@ -16,7 +16,7 @@ gdal==3.1.2               # via ada_tools (setup.py)
 geopandas==0.8.1          # via ada_tools (setup.py)
 munch==2.5.0              # via ada_tools (setup.py), fiona
 neat-eo==0.0.2            # via ada_tools (setup.py)
-numpy==1.19.1             # via ada_tools (setup.py), pandas, rasterio, snuggs
+numpy==1.22.0             # via ada_tools (setup.py), pandas, rasterio, snuggs
 pandas==1.1.0             # via ada_tools (setup.py), geopandas
 pyparsing==2.4.7          # via ada_tools (setup.py), snuggs
 pyproj==2.6.1.post1       # via ada_tools (setup.py), geopandas
