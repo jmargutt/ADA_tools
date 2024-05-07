@@ -27,4 +27,4 @@ shapely==1.7.0            # via ada_tools (setup.py), geopandas
 six==1.15.0               # via ada_tools (setup.py), fiona, munch, python-dateutil
 snuggs==1.4.7             # via ada_tools (setup.py), rasterio
 soupsieve==2.0.1          # via ada_tools (setup.py), beautifulsoup4
-tqdm==4.48.2              # via ada_tools (setup.py)
+tqdm==4.66.3              # via ada_tools (setup.py)
