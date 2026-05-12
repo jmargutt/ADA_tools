@@ -12,7 +12,7 @@ click-plugins==1.1.1      # via ada_tools (setup.py), fiona, rasterio
 click==7.1.2              # via ada_tools (setup.py), click-plugins, cligj, fiona, rasterio
 cligj==0.5.0              # via ada_tools (setup.py), fiona, rasterio
 fiona==1.10.0rc1       # via ada_tools (setup.py), geopandas
-gdal==3.1.2               # via ada_tools (setup.py)
+gdal==3.13.0               # via ada_tools (setup.py)
 geopandas==1.1.2          # via ada_tools (setup.py)
 munch==2.5.0              # via ada_tools (setup.py), fiona
 neat-eo==0.0.2            # via ada_tools (setup.py)
